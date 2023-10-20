@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
+const { PhotoPostSchema } = require("./api/schema.js")
 
 function getRandomInt(min, max) {
-  // 使用Math.random()生成0到1之間的隨機小數，將其乘以範圍差值，然後取整
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// 连接到源数据库
+// 來源資料庫
 const sourceDBURI =
   "mongodb+srv://dhoper777:apollo777@cluster0.jw3kqlu.mongodb.net/test?retryWrites=true&w=majority";
 mongoose.connect(sourceDBURI, {
@@ -13,7 +13,7 @@ mongoose.connect(sourceDBURI, {
   useUnifiedTopology: true,
 });
 
-// 连接到目标数据库
+// 目標資料庫
 const targetDBURI =
   "mongodb+srv://gxgemini777:apollo777@wildlens.0vgoc5r.mongodb.net/main?retryWrites=true&w=majority";
 const targetConnection = mongoose.createConnection(targetDBURI, {
@@ -21,84 +21,53 @@ const targetConnection = mongoose.createConnection(targetDBURI, {
   useUnifiedTopology: true,
 });
 
-// 定义源数据库的模型
+// 來源資料庫模型
 const SourceModel = mongoose.model("Animal", {});
 
-const schema = new mongoose.Schema({
-  title: String,
-  likes: Number,
-  views: Number,
-  description: String,
-  location: String,
-  geometry: {
-    type: Object,
-    coordinates: [Number],
-  },
-  comment: {
-    type: [mongoose.Schema.Types.ObjectId],
-    ref: "Comment",
-  },
-  image: [
-    {
-      url: String,
-      filename: String,
-      _id: mongoose.Schema.Types.ObjectId,
-    },
-  ],
-  author: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-  },
-  postDate: {
-    type: Date,
-    default: Date.now, // 可以指定默認日期值，如果未提供日期，將使用當前日期
-  },
-});
 
-// 定义目标数据库的模型
-const TargetModel = targetConnection.model("PhotoPost", schema);
+// 目標資料庫模型
+const TargetModel = targetConnection.model("PhotoPost", PhotoPostSchema);
 
-// 查询源数据库的数据并返回 Promise
 const querySourceData = async () => {
   const data = await SourceModel.find({}).lean();
   return data;
 };
 
-// 查询源数据库的数据
 querySourceData()
   .then(async (data) => {
-    // 将数据插入到目标数据库
-    console.log(data);
+    await TargetModel.deleteMany({})
+      .then((solve) => console.log(solve))
+      .catch((err) => console.log(err));
     for (const item of data) {
+      console.log(item.image);
       try {
-        await TargetModel.create({
+        const insertData = {
           title: item.title,
-          likes: getRandomInt(1, 1000),
-          views: getRandomInt(1, 1000),
+          likes: getRandomInt(2, 20000),
+          views: getRandomInt(2, 30000),
           description: item.description,
           location: item.location,
           geometry: item.geometry,
-          comment: item.reviews,
+          commentsId: [],
           image: item.image,
-          author: data[0].author,
-          postDate: item._id.getTimestamp(),
-        });
-        console.log("插入成功:", item);
+          authorId: "651fb7cf5463fe57f2ac71bb",
+          isEdit: false,
+        };
+        console.log(insertData);
+        await TargetModel.create(insertData);
       } catch (error) {
         console.error("插入失敗:", error);
       }
     }
-    return TargetModel.insertMany(data);
+    return;
   })
   .then(() => {
-    console.log("数据复制成功！");
-    // 关闭数据库连接
+    console.log("轉入成功！");
     mongoose.connection.close();
     targetConnection.close();
   })
   .catch((err) => {
-    console.error("出错：", err);
-    // 关闭数据库连接
+    console.error("錯誤：", err);
     mongoose.connection.close();
     targetConnection.close();
   });

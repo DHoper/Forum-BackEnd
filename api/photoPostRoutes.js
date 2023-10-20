@@ -1,51 +1,60 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const router = express.Router();
-
-const PhotoPostSchema = new mongoose.Schema({
-  title: String,
-  likes: Number,
-  views: Number,
-  description: String,
-  location: String,
-  geometry: {
-    type: Object,
-    coordinates: [Number],
-  },
-  comment: {
-    type: [mongoose.Schema.Types.ObjectId],
-    ref: "Comment",
-  },
-  image: [
-    {
-      url: String,
-      filename: String,
-      _id: mongoose.Schema.Types.ObjectId,
-    },
-  ],
-  author: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-  },
-  postDate: {
-    type: Date,
-    default: Date.now,
-  },
-});
+const { PhotoPostSchema } = require("./schema.js");
 
 const PhotoPost = mongoose.model("PhotoPost", PhotoPostSchema);
 
 router.get("/photoPost", async (req, res) => {
   const photoPost = await PhotoPost.find({})
+    .sort({ createdAt: -1 })
     .catch((err) => res.status(500).send("取得資料失敗"));
   res.json(photoPost);
 });
 
 router.get("/photoPost/:id", async (req, res) => {
   const photoPostId = req.params.id;
-  const photoPost = await PhotoPost.findById(photoPostId)
-    .catch((err) => res.status(500).send("取得資料失敗"));
+  const photoPost = await PhotoPost.findById(photoPostId).catch((err) =>
+    res.status(500).send("取得資料失敗")
+  );
   res.json(photoPost);
+});
+
+router.post("/photoPost/:id/statistics/:action", async (req, res) => {
+  const id = req.params.id;
+  const action = req.params.action;
+
+  if (action === "updateViews") {
+    try {
+      console.log(id, action);
+      const updatedViews = await PhotoPost.findByIdAndUpdate(id, {
+        $inc: { views: 1 },
+      });
+      res.json(updatedViews);
+    } catch (error) {
+      res.status(500).send("更新views失敗");
+    }
+  } else if (action === "increaseLikes") {
+    try {
+      const updatedViews = await PhotoPost.findByIdAndUpdate(id, {
+        $inc: { likes: 1 },
+      });
+
+      res.json(updatedViews);
+    } catch (error) {
+      res.status(500).send("增加likes失敗");
+    }
+  } else if (action === "reduceLikes") {
+    try {
+      const updatedViews = await PhotoPost.findByIdAndUpdate(id, {
+        $inc: { likes: -1 },
+      });
+
+      res.json(updatedViews);
+    } catch (error) {
+      res.status(500).send("減少likes失敗");
+    }
+  }
 });
 
 module.exports = router;
