@@ -49,7 +49,7 @@ querySourceData()
           location: item.location,
           geometry: item.geometry,
           commentsId: [],
-          image: item.image,
+          images: item.image,
           authorId: "651fb7cf5463fe57f2ac71bb",
           isEdit: false,
         };

@@ -6,13 +6,25 @@ const { PhotoPostSchema } = require("./schema.js");
 const PhotoPost = mongoose.model("PhotoPost", PhotoPostSchema);
 
 router.get("/photoPost", async (req, res) => {
+  //取得貼文
   const photoPost = await PhotoPost.find({})
     .sort({ createdAt: -1 })
-    .catch((err) => res.status(500).send("取得資料失敗"));
+    .catch((err) => res.status(500).send("取得資料失敗:" + err));
   res.json(photoPost);
 });
 
+router.post("/photoPost", async (req, res) => {
+  //創建貼文
+  const postData = await req.body;
+  const newPhotoPost = new PhotoPost(postData);
+  const response = await newPhotoPost
+    .save()
+    .catch((err) => res.status(500).send("貼文建立失敗失敗:" + err));
+  res.json("貼文發佈成功!");
+});
+
 router.get("/photoPost/:id", async (req, res) => {
+  //取得單筆貼文
   const photoPostId = req.params.id;
   const photoPost = await PhotoPost.findById(photoPostId).catch((err) =>
     res.status(500).send("取得資料失敗")
@@ -21,6 +33,7 @@ router.get("/photoPost/:id", async (req, res) => {
 });
 
 router.post("/photoPost/:id/statistics/:action", async (req, res) => {
+  //更新貼文統計數字
   const id = req.params.id;
   const action = req.params.action;
 

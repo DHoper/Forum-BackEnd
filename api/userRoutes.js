@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const router = express.Router();
-const { UserSchema }= require("./schema.js");
+const { UserSchema } = require("./schema.js");
 
 const User = mongoose.model("User", UserSchema);
 
@@ -35,4 +35,24 @@ router.post("/user", async (req, res) => {
   res.json("註冊成功!");
 });
 
+router.put("/user", async (req, res) => {
+  const updatedData = req.body;
+  const userId = updatedData._id;
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "用户不存在" });
+    }
+    user.set({
+      ...updatedData,
+      _id: user._id,
+    });
+
+    await user.save();
+
+    res.json({ message: "用戶資料已更新", user: user });
+  } catch (err) {
+    res.status(500).json({ message: `更新用戶資料失敗: ${err}` });
+  }
+});
 module.exports = router;

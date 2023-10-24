@@ -31,12 +31,17 @@ const PhotoPostSchema = new mongoose.Schema(
       type: [mongoose.Schema.Types.ObjectId],
       ref: "Comment",
     },
-    image: {
+    images: {
       type: [
         {
-          url: String,
-          filename: String,
-          _id: mongoose.Schema.Types.ObjectId,
+          url: {
+            type: String,
+            required: true,
+          },
+          filename: {
+            type: String,
+            required: true,
+          },
         },
       ],
       required: true,
@@ -85,6 +90,10 @@ const UserSchema = new mongoose.Schema(
     password: String,
     selectedAvatarIndex: Number,
     selectedTags: Array,
+    intro: {
+      type: String,
+      required: false,
+    },
   },
   {
     timestamps: true,
