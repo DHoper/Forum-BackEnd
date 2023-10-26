@@ -85,14 +85,88 @@ const CommentSchema = new mongoose.Schema(
 
 const UserSchema = new mongoose.Schema(
   {
-    email: String,
-    username: String,
-    password: String,
-    selectedAvatarIndex: Number,
-    selectedTags: Array,
+    email: {
+      type: String,
+      required: true,
+    },
+    username: {
+      type: String,
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    selectedAvatarIndex: {
+      type: Number,
+      required: true,
+    },
+    selectedTags: {
+      type: Array,
+      required: true,
+    },
     intro: {
       type: String,
       required: false,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+const CommunityPostSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+    },
+    authorId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    images: {
+      type: [
+        {
+          url: {
+            type: String,
+            required: true,
+          },
+          filename: {
+            type: String,
+            required: true,
+          },
+        },
+      ],
+    },
+    content: {
+      type: String,
+      required: true,
+    },
+    likes: {
+      type: Number,
+      required: true,
+    },
+    views: {
+      type: Number,
+      required: true,
+    },
+    topicTags: {
+      type: [
+        {
+          type: String,
+        },
+      ],
+      required: true,
+    },
+    commentsId: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "communityComment",
+    },
+    isEdit: {
+      type: Boolean,
+      required: true,
     },
   },
   {
@@ -104,4 +178,5 @@ module.exports = {
   PhotoPostSchema,
   UserSchema,
   CommentSchema,
+  CommunityPostSchema,
 };

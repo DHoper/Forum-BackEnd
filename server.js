@@ -4,6 +4,7 @@ const cors = require("cors");
 const photoPostRoutes = require("./api/photoPostRoutes");
 const userRoutes = require("./api/userRoutes");
 const commentRoutes = require("./api/commentRoutes");
+const communityRoutes = require("./api/communityRoutes");
 
 const app = express();
 const dbUrl =
@@ -22,6 +23,7 @@ app.use(express.json());
 app.use("/", userRoutes);
 app.use("/", photoPostRoutes);
 app.use("/", commentRoutes);
+app.use("/", communityRoutes);
 
 
 app.listen(3000, () => {
