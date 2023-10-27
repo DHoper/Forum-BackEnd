@@ -25,8 +25,8 @@ router.post("/photoPost", async (req, res) => {
 
 router.get("/photoPost/:id", async (req, res) => {
   //取得單筆貼文
-  const photoPostId = req.params.id;
-  const photoPost = await PhotoPost.findById(photoPostId).catch((err) =>
+  const postId = req.params.id;
+  const photoPost = await PhotoPost.findById(postId).catch((err) =>
     res.status(500).send("取得資料失敗")
   );
   res.json(photoPost);

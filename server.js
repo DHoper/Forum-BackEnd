@@ -5,6 +5,7 @@ const photoPostRoutes = require("./api/photoPostRoutes");
 const userRoutes = require("./api/userRoutes");
 const commentRoutes = require("./api/commentRoutes");
 const communityRoutes = require("./api/communityRoutes");
+const communityCommentRoutes = require("./api/communityCommentRoutes");
 
 const app = express();
 const dbUrl =
@@ -24,6 +25,7 @@ app.use("/", userRoutes);
 app.use("/", photoPostRoutes);
 app.use("/", commentRoutes);
 app.use("/", communityRoutes);
+app.use("/", communityCommentRoutes);
 
 
 app.listen(3000, () => {

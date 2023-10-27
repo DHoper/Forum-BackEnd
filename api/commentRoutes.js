@@ -16,12 +16,12 @@ router.get("/comment/:id", async (req, res) => {
 
 router.post("/comment", async (req, res) => {
   const postData = await req.body;
-  const photoPostId = req.body.photoPostId;
+  const postId = req.body.postId;
   const newComment = new Comment(postData);
   await newComment
     .save()
     .catch((err) => res.status(500).send("建立新comment失敗"));
-  await PhotoPost.findByIdAndUpdate(photoPostId, {
+  await PhotoPost.findByIdAndUpdate(postId, {
     $push: { commentsId: newComment._id },
   });
   res.json("留言建立成功!");
@@ -36,11 +36,11 @@ router.delete("/comment/:commentId", async (req, res) => {
       return res.status(404).json({ message: "找不到該評論" });
     }
 
-    const photoPostId = comment.photoPostId;
+    const postId = comment.postId;
 
     await Comment.findByIdAndRemove(commentId);
 
-    await PhotoPost.findByIdAndUpdate(photoPostId, {
+    await PhotoPost.findByIdAndUpdate(postId, {
       $pull: { commentsId: commentId },
     });
 

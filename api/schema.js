@@ -63,7 +63,7 @@ const PhotoPostSchema = new mongoose.Schema(
 
 const CommentSchema = new mongoose.Schema(
   {
-    photoPostId: {
+    postId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "PhotoPost",
       required: true,

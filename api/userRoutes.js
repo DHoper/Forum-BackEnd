@@ -25,7 +25,11 @@ router.get("/user/author/:authorID", async (req, res) => {
   const user = await User.findById(authorID).catch((err) =>
     res.status(500).send(`取得資料失敗,錯誤訊息:${err}`)
   );
-  res.json(user);
+  const authorData = {
+    username: user.username,
+    selectedAvatarIndex: user.selectedAvatarIndex,
+  }
+  res.json(authorData);
 });
 
 router.post("/user", async (req, res) => {

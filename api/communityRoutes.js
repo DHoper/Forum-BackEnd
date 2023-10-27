@@ -3,15 +3,14 @@ const mongoose = require("mongoose");
 const router = express.Router();
 const { CommunityPostSchema } = require("./schema.js");
 
-const CommunityPost = mongoose.model("Community", CommunityPostSchema);
+const CommunityPost = mongoose.model("CommunityPost", CommunityPostSchema);
 
 router.get("/communityPost", async (req, res) => {
-  //取得貼文
-  // const communityPost = await CommunityPost.find({})
-  //   .sort({ createdAt: -1 })
-  //   .catch((err) => res.status(500).send("取得資料失敗:" + err));
-  // res.json(communityPost);
-  res.send(777)
+  //取得所有貼文
+  const communityPost = await CommunityPost.find({})
+    .sort({ createdAt: -1 })
+    .catch((err) => res.status(500).send("取得資料失敗:" + err));
+  res.json(communityPost);
 });
 
 router.post("/communityPost", async (req, res) => {
