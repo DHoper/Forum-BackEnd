@@ -3,45 +3,64 @@ const mongoose = require("mongoose");
 const router = express.Router();
 const { PhotoPostSchema, CommentSchema } = require("./schema.js");
 
-const Comment = mongoose.model("Comment", CommentSchema);
+const PhotoPostComment = mongoose.model("PhotoPostComment", CommentSchema);
 const PhotoPost = mongoose.model("PhotoPost", PhotoPostSchema);
 
-router.get("/comment/:id", async (req, res) => {
+router.get("/photoPostComment/:id", async (req, res) => {
   const id = req.params.id;
-  const comment = await Comment.findById(id).catch((err) =>
-    res.status(500).send("取得comment資料失敗")
+  const photoPostComment = await PhotoPostComment.findById(id).catch((err) =>
+    res.status(500).send("取得photoPostComment資料失敗")
   );
-  res.json(comment);
+  res.json(photoPostComment);
 });
 
-router.post("/comment", async (req, res) => {
+router.post("/photoPostComment/getComments", async (req, res) => {
+  const idList = req.body;
+  if (!idList || !Array.isArray(idList)) {
+    return res.status(400).send("無效的ID資料列");
+  }
+
+  try {
+    const photoPostComments = await PhotoPostComment.find({
+      _id: { $in: idList },
+    });
+
+    res.json(photoPostComments);
+  } catch (error) {
+    res.status(500).send("取得photoPostComments資料失敗");
+  }
+});
+
+router.post("/photoPostComment", async (req, res) => {
   const postData = await req.body;
   const postId = req.body.postId;
-  const newComment = new Comment(postData);
-  await newComment
+  const newPhotoPostComment = new PhotoPostComment(postData);
+  await newPhotoPostComment
     .save()
-    .catch((err) => res.status(500).send("建立新comment失敗"));
+    .catch((err) => res.status(500).send("建立新photoPostComment失敗"));
   await PhotoPost.findByIdAndUpdate(postId, {
-    $push: { commentsId: newComment._id },
-  });
+    $push: { commentsId: newPhotoPostComment._id },
+  }).catch((err) => console.err("更新貼文留言失敗:", err));
   res.json("留言建立成功!");
 });
 
-router.delete("/comment/:commentId", async (req, res) => {
-  const commentId = req.params.commentId;
+router.delete("/photoPostComment/:photoPostCommentId", async (req, res) => {
+  const photoPostCommentId = req.params.photoPostCommentId;
 
   try {
-    const comment = await Comment.findById(commentId);
-    if (!comment) {
+    const photoPostComment = await PhotoPostComment.findById(
+      photoPostCommentId
+    );
+    if (!photoPostComment) {
       return res.status(404).json({ message: "找不到該評論" });
     }
 
-    const postId = comment.postId;
+    const postId = photoPostComment.postId;
 
-    await Comment.findByIdAndRemove(commentId);
+    await PhotoPostComment.findByIdAndRemove(photoPostCommentId);
 
     await PhotoPost.findByIdAndUpdate(postId, {
-      $pull: { commentsId: commentId },
+      $pull: { photoPostCommentsId: photoPostCommentId },
     });
 
     res.json({ message: "評論已成功删除" });
