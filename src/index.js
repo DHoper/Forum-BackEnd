@@ -13,7 +13,6 @@ const app = express();
 const port = process.env.PORT || 3000;
 const dbUrl = process.env.DBUrl;
 
-console.log(dbUrl);
 (async () => {
   await mongoose.connect(dbUrl);
   return "DB連接成功!!!";

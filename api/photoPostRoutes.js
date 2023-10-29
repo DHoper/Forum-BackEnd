@@ -39,7 +39,6 @@ router.post("/photoPost/:id/statistics/:action", async (req, res) => {
 
   if (action === "updateViews") {
     try {
-      console.log(id, action);
       const updatedViews = await PhotoPost.findByIdAndUpdate(id, {
         $inc: { views: 1 },
       });
