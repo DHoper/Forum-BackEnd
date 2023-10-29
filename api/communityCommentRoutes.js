@@ -15,8 +15,7 @@ router.get("/communityComment/:id", async (req, res) => {
 });
 
 router.post("/communityComment/getComments", async (req, res) => {
-  const idList = req.body.idList;
-console.log(idList);
+  const idList = req.body;
   if (!idList || !Array.isArray(idList)) {
     return res.status(400).send("無效的ID資料列");
   }
@@ -39,7 +38,6 @@ router.post("/communityComment", async (req, res) => {
   await newCommunityComment
     .save()
     .catch((err) => res.status(500).send("建立新communityComment失敗"));
-    console.log(postId);
   await CommunityPost.findByIdAndUpdate(postId, {
     $push: { commentsId: newCommunityComment._id },
   }).catch((err) => console.err("更新貼文留言失敗:", err));
