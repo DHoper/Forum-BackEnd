@@ -1,11 +1,11 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const photoPostRoutes = require("./api/photoPostRoutes");
-const userRoutes = require("./api/userRoutes");
-const commentRoutes = require("./api/commentRoutes");
-const communityRoutes = require("./api/communityRoutes");
-const communityCommentRoutes = require("./api/communityCommentRoutes");
+const photoPostRoutes = require("../api/photoPostRoutes");
+const userRoutes = require("../api/userRoutes");
+const commentRoutes = require("../api/commentRoutes");
+const communityRoutes = require("../api/communityRoutes");
+const communityCommentRoutes = require("../api/communityCommentRoutes");
 
 const app = express();
 const dbUrl =
