@@ -30,5 +30,5 @@ app.use("/", communityRoutes);
 app.use("/", communityCommentRoutes);
 
 app.listen(port, () => {
-  console.log("程序運行於 3000 端口中");
+  console.log(`程序運行於${ port }端口中`);
 });
