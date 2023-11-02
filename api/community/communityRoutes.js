@@ -4,7 +4,10 @@ const router = express.Router();
 const { CommunityPostSchema, CommentSchema } = require("../schema.js");
 
 const CommunityPost = mongoose.model("CommunityPost", CommunityPostSchema);
-const CommunityPostComment = mongoose.model("CommunityPostComment", CommentSchema);
+const CommunityPostComment = mongoose.model(
+  "CommunityPostComment",
+  CommentSchema
+);
 
 router.get("/communityPost", async (req, res) => {
   //取得所有貼文
@@ -27,28 +30,29 @@ router.get("/communityPost/user/:authorId", async (req, res) => {
 router.get("/communityPost/:id", async (req, res) => {
   //取得單筆貼文
   const communityPostId = req.params.id;
-  const communityPost = await CommunityPost.findById(communityPostId).catch((err) =>
-    res.status(500).send("取得資料失敗")
+  const communityPost = await CommunityPost.findById(communityPostId).catch(
+    (err) => res.status(500).send("取得資料失敗")
   );
   res.json(communityPost);
 });
 
-
 router.post("/communityPost", async (req, res) => {
-  //創建貼文
-  const postData = await req.body;
-  const newCommunityPost = new CommunityPost(postData);
-  const response = await newCommunityPost
-    .save()
-    .catch((err) => res.status(500).send("貼文建立失敗失敗:" + err));
-  res.json("貼文發佈成功!");
+  try {
+    const postData = req.body;
+    console.log(postData, 777);
+    const newCommunityPost = new CommunityPost(postData);
+    const response = await newCommunityPost.save();
+    res.json("貼文發佈成功!");
+  } catch (err) {
+    res.status(500).send("貼文建立失敗: " + err);
+  }
 });
 
 router.get("/communityPost/:id", async (req, res) => {
   //取得單筆貼文
   const communityPostId = req.params.id;
-  const communityPost = await CommunityPost.findById(communityPostId).catch((err) =>
-    res.status(500).send("取得資料失敗")
+  const communityPost = await CommunityPost.findById(communityPostId).catch(
+    (err) => res.status(500).send("取得資料失敗")
   );
   res.json(communityPost);
 });
@@ -97,9 +101,13 @@ router.put("/communityPost/:postId", async (req, res) => {
     const postId = req.params.postId;
     const updatedData = req.body;
 
-    const updatedPost = await CommunityPost.findByIdAndUpdate(postId, updatedData, {
-      new: true,
-    });
+    const updatedPost = await CommunityPost.findByIdAndUpdate(
+      postId,
+      updatedData,
+      {
+        new: true,
+      }
+    );
 
     if (!updatedPost) {
       return res.status(404).json({ error: "找不到該貼文" });
@@ -118,7 +126,7 @@ router.delete("/communityPost/:id", async (req, res) => {
   try {
     const deletedCommunityPost = await CommunityPost.findByIdAndDelete(postId);
     const deletedPostComments = deletedCommunityPost.commentsId;
-    for(const id of deletedPostComments) {
+    for (const id of deletedPostComments) {
       await CommunityPostComment.findByIdAndRemove(id);
     }
 
@@ -131,6 +139,5 @@ router.delete("/communityPost/:id", async (req, res) => {
     res.status(500).json({ message: `刪除貼文失敗:${err}` });
   }
 });
-
 
 module.exports = router;
