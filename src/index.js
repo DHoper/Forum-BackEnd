@@ -1,11 +1,12 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const photoPostRoutes = require("../api/photoPostRoutes");
-const userRoutes = require("../api/userRoutes");
-const photoPostCommentRoutes = require("../api/photoPostCommentRoutes");
-const communityRoutes = require("../api/communityRoutes");
-const communityCommentRoutes = require("../api/communityCommentRoutes");
+const userRoutes = require("../api/user/userRoutes");
+const photoPostRoutes = require("../api/photo/photoPostRoutes");
+const photoPostCommentRoutes = require("../api/photo/photoPostCommentRoutes");
+const communityRoutes = require("../api/community/communityRoutes");
+const communityCommentRoutes = require("../api/community/communityCommentRoutes");
+const ImageRoutes = require("../api/image/imageRoutes")
 require('dotenv').config();
 
 const app = express();
@@ -28,6 +29,7 @@ app.use("/", photoPostRoutes);
 app.use("/", photoPostCommentRoutes);
 app.use("/", communityRoutes);
 app.use("/", communityCommentRoutes);
+app.use("/", ImageRoutes);
 
 app.listen(port, () => {
   console.log(`程序運行於${ port }端口中`);

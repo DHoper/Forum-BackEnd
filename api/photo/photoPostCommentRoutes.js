@@ -1,18 +1,10 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const router = express.Router();
-const { PhotoPostSchema, CommentSchema } = require("./schema.js");
+const { PhotoPostSchema, CommentSchema } = require("../schema.js");
 
 const PhotoPostComment = mongoose.model("PhotoPostComment", CommentSchema);
 const PhotoPost = mongoose.model("PhotoPost", PhotoPostSchema);
-
-// router.get("/photoPostComment/:id", async (req, res) => {
-//   const id = req.params.id;
-//   const photoPostComment = await PhotoPostComment.findById(id).catch((err) =>
-//     res.status(500).send("取得photoPostComment資料失敗")
-//   );
-//   res.json(photoPostComment);
-// });
 
 router.post("/photoPostComment/getComments", async (req, res) => {
   const idList = req.body;

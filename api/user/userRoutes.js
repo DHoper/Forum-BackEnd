@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const router = express.Router();
-const { UserSchema } = require("./schema.js");
+const { UserSchema } = require("../schema.js");
 
 const User = mongoose.model("User", UserSchema);
 
