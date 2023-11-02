@@ -39,7 +39,6 @@ router.get("/communityPost/:id", async (req, res) => {
 router.post("/communityPost", async (req, res) => {
   try {
     const postData = req.body;
-    console.log(postData, 777);
     const newCommunityPost = new CommunityPost(postData);
     const response = await newCommunityPost.save();
     res.json("貼文發佈成功!");
