@@ -1,13 +1,13 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const router = express.Router();
-const { UserSchema } = require("./schema.js");
+const { UserSchema } = require("../schema.js");
 
 const User = mongoose.model("User", UserSchema);
 
 router.get("/user", async (req, res) => {
   const users = await User.find({}).catch((err) =>
-    res.status(500).send("取得資料失敗")
+    res.status(500).send("取得所有用戶資料失敗")
   );
   res.json(users);
 });
@@ -15,7 +15,7 @@ router.get("/user", async (req, res) => {
 router.get("/user/:email", async (req, res) => {
   const userEmail = req.params.email;
   const user = await User.findOne({ email: userEmail }).catch((err) =>
-    res.status(500).send(`取得資料失敗,錯誤訊息:${err}`)
+    res.status(500).send(`取得用戶資料失敗,錯誤訊息:${err}`)
   );
   res.json(user);
 });
@@ -23,7 +23,20 @@ router.get("/user/:email", async (req, res) => {
 router.get("/user/author/:authorID", async (req, res) => {
   const authorID = req.params.authorID;
   const user = await User.findById(authorID).catch((err) =>
-    res.status(500).send(`取得資料失敗,錯誤訊息:${err}`)
+    res.status(500).send(`取得用戶資料失敗,錯誤訊息:${err}`)
+  );
+  const authorData = {
+    username: user.username,
+    email: user.email,
+    selectedAvatarIndex: user.selectedAvatarIndex,
+  }
+  res.json(authorData);
+});
+
+router.get("/user/author/:authorID", async (req, res) => {
+  const authorID = req.params.authorID;
+  const user = await User.findById(authorID).catch((err) =>
+    res.status(500).send(`取得用戶資料失敗,錯誤訊息:${err}`)
   );
   const authorData = {
     username: user.username,
