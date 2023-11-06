@@ -24,12 +24,12 @@ const dbUrl = process.env.DBUrl;
 app.use(cors());
 app.use(express.json());
 
-app.use("/", userRoutes);
-app.use("/", photoPostRoutes);
-app.use("/", photoPostCommentRoutes);
-app.use("/", communityRoutes);
-app.use("/", communityCommentRoutes);
-app.use("/", ImageRoutes);
+app.use("/api", userRoutes);
+app.use("/api", photoPostRoutes);
+app.use("/api", photoPostCommentRoutes);
+app.use("/api", communityRoutes);
+app.use("/api", communityCommentRoutes);
+app.use("/api", ImageRoutes);
 
 app.listen(port, () => {
   console.log(`程序運行於${ port }端口中`);
