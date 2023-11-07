@@ -5,7 +5,7 @@ const router = express.Router();
 
 const Visitor = mongoose.model('Visitor', { count: Number });
 
-router.post('/api/visitorCount', async (req, res) => {
+router.post('/visitorCount', async (req, res) => {
   try {
     const updatedVisitor = await Visitor.findOneAndUpdate({}, { $inc: { count: 1 } }, { new: true, upsert: true });
     res.json({ visitorCount: updatedVisitor.count });
