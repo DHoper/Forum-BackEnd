@@ -6,7 +6,8 @@ const photoPostRoutes = require("../api/photo/photoPostRoutes");
 const photoPostCommentRoutes = require("../api/photo/photoPostCommentRoutes");
 const communityRoutes = require("../api/community/communityRoutes");
 const communityCommentRoutes = require("../api/community/communityCommentRoutes");
-const ImageRoutes = require("../api/image/imageRoutes")
+const ImageRoutes = require("../api/image/imageRoutes");
+const visitor = require("../api/visitor")
 require('dotenv').config();
 
 const app = express();
@@ -30,6 +31,7 @@ app.use("/api", photoPostCommentRoutes);
 app.use("/api", communityRoutes);
 app.use("/api", communityCommentRoutes);
 app.use("/api", ImageRoutes);
+app.use("/api", visitor);
 
 app.listen(port, () => {
   console.log(`程序運行於${ port }端口中`);
